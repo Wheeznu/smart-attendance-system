@@ -30,6 +30,6 @@ class DashboardController extends Controller
                              ->take(5)
                              ->get();
 
-    return view('dashboard', compact('stats', 'aktivitas_terbaru', 'acara_mendatang'));
+    return view('absensi.dashboard', compact('stats', 'aktivitas_terbaru', 'acara_mendatang'));
 }
 }

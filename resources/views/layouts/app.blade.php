@@ -397,7 +397,8 @@ function initCharts() {
   const hadir = [210, 195, 220, 205, 192, 180, 215];
   const absen = [38, 53, 28, 43, 56, 68, 33];
 
-  new Chart(document.getElementById('attendanceChart'), {
+  const attChartEl = document.getElementById('attendanceChart');
+  if (attChartEl) { new Chart(attChartEl, {
     type: 'bar',
     data: {
       labels: days,
@@ -414,9 +415,10 @@ function initCharts() {
         y: { grid: { color: 'rgba(255,255,255,0.02)' }, ticks: { color: '#94A3B8', font: { family: 'Inter', size: 11 } } }
       }
     }
-  });
+  }); }
 
-  new Chart(document.getElementById('statusChart'), {
+  const statChartEl = document.getElementById('statusChart');
+  if (statChartEl) { new Chart(statChartEl, {
     type: 'doughnut',
     data: {
       labels: ['Hadir', 'Terlambat', 'Tidak Hadir'],
@@ -426,7 +428,7 @@ function initCharts() {
       responsive: true, maintainAspectRatio: false, cutout: '72%',
       plugins: { legend: { display: false } }
     }
-  });
+  }); }
 }
 
 function initLaporanChart() {

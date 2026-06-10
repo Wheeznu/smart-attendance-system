@@ -18,6 +18,12 @@ class Agenda extends Model
         'checkout',
         'batas_checkout',
     ];
+    protected $casts = [
+        'checkin' => 'datetime',
+        'batas_checkin' => 'datetime',
+        'checkout' => 'datetime',
+        'batas_checkout' => 'datetime',
+    ];
 
     public function acara(): BelongsTo
     {

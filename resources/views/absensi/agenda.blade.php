@@ -4,10 +4,10 @@
 <div id="page-acara" class="page active">
   <!-- Header -->
   <div class="flex items-center justify-between mb-6">
-    <p class="text-blue-600">
-        <a href="/acara">Acara </a>/ 
+    <div class="text-sm flex items-center font-display font-600 uppercase tracking-wider text-slate-600 mb-3">
+        <a href="/acara">Acara&nbsp;</a>/ 
         {{ $namaacara->nama }}
-</p>
+</div>
     <button class="btn-primary" onclick="showModal('modal-tambah-acara')">
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -101,18 +101,18 @@
       <input type="hidden" name="acara_id" value="{{ $namaacara->id }}">
       <div>
         <label>Nama Agenda</label>
-        <input name="nama" type="text" class="inp" placeholder="Contoh: Pembukaan">
+        <input name="nama" required type="text" class="inp" placeholder="Contoh: Pembukaan">
       </div>
 
       <label><b>Checkin</b></label>
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label>Jam Mulai Checkin</label>
-          <input type="datetime-local" name="checkin" class="inp">
+          <input type="datetime-local" required name="checkin" class="inp">
         </div>
         <div>
           <label>Jam Selesai Checkin</label>
-          <input type="datetime-local" name="batas_checkin" class="inp">
+          <input type="datetime-local" required name="batas_checkin" class="inp">
         </div>
       </div>
       <hr>
@@ -120,11 +120,11 @@
       <div class="grid grid-cols-2 gap-4">
         <div>
           <label>Jam Mulai Checkout</label>
-          <input type="datetime-local" name="checkout" class="inp">
+          <input type="datetime-local" required name="checkout" class="inp">
         </div>
         <div>
           <label>Jam Selesai Checkout</label>
-          <input type="datetime-local" name="batas_checkout" class="inp">
+          <input type="datetime-local" required name="batas_checkout" class="inp">
         </div>
       </div>
 
@@ -140,9 +140,8 @@
       >
         Batal
       </button>
-      <button
+      <button type="submit"
         class="btn-primary flex-1 justify-center"
-        onclick="saveAcara()"
       >
         Simpan
       </button>

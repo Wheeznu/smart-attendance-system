@@ -23,15 +23,11 @@
         <div class="space-y-2">
           <div class="flex justify-between text-sm">
             <span class="text-slate-600">Absen Masuk</span>
-            <span class="text-slate-900 font-600">{{ $agenda->jam_mulai }}</span>
-          </div>
-          <div class="flex justify-between text-sm">
-            <span class="text-slate-600">Batas Terlambat</span>
-            <span class="text-blue-600 font-600">09:01 – 09:30</span>
+            <span class="text-blue-600 font-600">{{ $agenda->checkin->format('H:i') }} - {{ $agenda->batas_checkin->format('H:i') }}</span>
           </div>
           <div class="flex justify-between text-sm">
             <span class="text-slate-600">Absen Pulang</span>
-            <span class="text-slate-900 font-600">15:00 – 17:00</span>
+            <span class="text-red-600 font-600">{{ $agenda->checkout->format('H:i') }} - {{ $agenda->batas_checkout->format('H:i') }}</span>
           </div>
         </div>
       </div>

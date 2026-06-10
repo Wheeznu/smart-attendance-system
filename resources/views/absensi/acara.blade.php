@@ -50,7 +50,7 @@
               <td>{{ $acr->lokasi }}</td>
               <td class="no-print">
                 <div class="flex gap-2">
-                  <a href="acara/agenda/{{ $acr->id }}" class="btn-primary py-1.5 px-3 text-xs">Agenda</a>
+                  <a href="acara/agenda/{{ $acr->id }}" class="btn-primary py-1.5 px-3 text-xs">Detail</a>
                   <button class="btn-secondary py-1.5 px-3 text-xs">Edit</button>
                   <button class="btn-danger py-1.5 px-3 text-xs">Hapus</button>
                 </div>

@@ -16,8 +16,43 @@
     </button>
   </div>
 
-  <!-- Content -->
-  <div id="acara-list" class="space-y-4">
+  <!-- Tab Menu -->
+  <div class="flex gap-2 mb-4 border-b border-slate-200 no-print">
+    <button 
+      onclick="switchTab('tab-daftar')" 
+      id="btn-tab-daftar"
+      class="px-4 py-3 font-500 text-sm border-b-2 border-blue-600 text-blue-600 transition"
+    >
+      <svg class="w-4 h-4 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      Daftar Agenda
+    </button>
+    <button 
+      onclick="switchTab('tab-template')" 
+      id="btn-tab-template"
+      class="px-4 py-3 font-500 text-sm border-b-2 border-transparent text-slate-600 hover:text-slate-900 hover:border-slate-300 transition"
+    >
+      <svg class="w-4 h-4 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      Daftar Divisi
+    </button>
+    <button 
+      onclick="switchTab('tab-panitia')" 
+      id="btn-tab-panitia"
+      class="px-4 py-3 font-500 text-sm border-b-2 border-transparent text-slate-600 hover:text-slate-900 hover:border-slate-300 transition"
+    >
+      <svg class="w-4 h-4 inline-block mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+      </svg>
+      Daftar Panitia
+    </button>
+  </div>
+
+  <!-- Tab Content: Daftar Agenda -->
+  <div id="tab-daftar" class="tab-content active">
+    <div id="acara-list" class="space-y-4">
     <div id="agenda-table" class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
       <table class="data-table">
         <thead>
@@ -75,7 +110,109 @@
       </table>
     </div>
   </div>
-</div>
+    </div>
+  </div>
+
+  <!-- Tab Content: Tab Divisi -->
+  <div id="tab-template" class="tab-content hidden">
+    <div id="template-table" class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Divisi</th>
+            <th>Deskripsi</th>
+            <th class="no-print">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="template-tbody">
+          <!-- Baris template kosong -->
+           @foreach ($divisi as $div )
+             
+           <tr class="bg-slate-50 border-b border-slate-100">
+             <td class="text-slate-400">{{ $idx + 1 }}</td>
+             <td class="text-slate-400">{{ $div->nama }}</td>
+             <td class="text-slate-400">{{ $div->deskripsi }}</td>
+             <td class="no-print">
+               <div class="flex gap-2">
+                 <button class="py-1.5 px-3 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled opacity-50 cursor-not-allowed" disabled>Detail</button>
+                 <button class="btn-secondary py-1.5 px-3 text-xs disabled opacity-50 cursor-not-allowed" disabled>Edit</button>
+                 <button class="btn-danger py-1.5 px-3 text-xs disabled opacity-50 cursor-not-allowed" disabled>Hapus</button>
+               </div>
+             </td>
+           </tr>
+           
+           @endforeach
+        </tbody>
+      </table>
+    </div>
+  </div>
+  <!-- Tab Content: Tab Panitia -->
+  <div id="tab-panitia" class="tab-content hidden">
+    <div id="template-table" class="bg-white border border-slate-200 rounded-xl shadow-sm overflow-hidden">
+      <table class="data-table">
+        <thead>
+          <tr>
+            <th>No</th>
+            <th>Nama</th>
+            <th>RFID</th>
+            <th>Divisi</th>
+            <th>Checkin</th>
+            <th>Checkout</th>
+            <th class="no-print">Aksi</th>
+          </tr>
+        </thead>
+        <tbody id="template-tbody">
+          <!-- Baris template kosong -->
+          <tr class="bg-slate-50 border-b border-slate-100">
+            <td class="text-slate-400">-</td>
+            <td class="text-slate-400">-</td>
+            <td class="text-slate-400">-</td>
+            <td class="text-slate-400">-</td>
+            <td class="text-slate-400">-</td>
+            <td class="text-slate-400">-</td>
+            <td class="no-print">
+              <div class="flex gap-2">
+                <button class="py-1.5 px-3 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled opacity-50 cursor-not-allowed" disabled>Detail</button>
+                <button class="btn-secondary py-1.5 px-3 text-xs disabled opacity-50 cursor-not-allowed" disabled>Edit</button>
+                <button class="btn-danger py-1.5 px-3 text-xs disabled opacity-50 cursor-not-allowed" disabled>Hapus</button>
+              </div>
+            </td>
+          </tr>
+          <tr class="bg-slate-50 border-b border-slate-100">
+            <td class="text-slate-400">-</td>
+            <td class="text-slate-400">-</td>
+            <td class="text-slate-400">-</td>
+            <td class="text-slate-400">-</td>
+            <td class="text-slate-400">-</td>
+            <td class="text-slate-400">-</td>
+            <td class="no-print">
+              <div class="flex gap-2">
+                <button class="py-1.5 px-3 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled opacity-50 cursor-not-allowed" disabled>Detail</button>
+                <button class="btn-secondary py-1.5 px-3 text-xs disabled opacity-50 cursor-not-allowed" disabled>Edit</button>
+                <button class="btn-danger py-1.5 px-3 text-xs disabled opacity-50 cursor-not-allowed" disabled>Hapus</button>
+              </div>
+            </td>
+          </tr>
+          <tr class="bg-slate-50 border-b border-slate-100">
+            <td class="text-slate-400">-</td>
+            <td class="text-slate-400">-</td>
+            <td class="text-slate-400">-</td>
+            <td class="text-slate-400">-</td>
+            <td class="text-slate-400">-</td>
+            <td class="text-slate-400">-</td>
+            <td class="no-print">
+              <div class="flex gap-2">
+                <button class="py-1.5 px-3 text-xs bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition disabled opacity-50 cursor-not-allowed" disabled>Detail</button>
+                <button class="btn-secondary py-1.5 px-3 text-xs disabled opacity-50 cursor-not-allowed" disabled>Edit</button>
+                <button class="btn-danger py-1.5 px-3 text-xs disabled opacity-50 cursor-not-allowed" disabled>Hapus</button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
 
 <!-- Modal: Tambah Agenda -->
 <div id="modal-tambah-acara" class="modal-overlay hidden" onclick="closeModal(event, 'modal-tambah-acara')">
@@ -265,4 +402,39 @@ function showDetailModal(id, nama, checkin, batasCheckin, checkout, batasCheckou
 function printDetailAgenda() {
   window.print();
 }
+
+function switchTab(tabName) {
+  // Hide all tabs
+  const tabs = document.querySelectorAll('.tab-content');
+  tabs.forEach(tab => tab.classList.add('hidden'));
+  
+  // Remove active state from all buttons
+  const buttons = document.querySelectorAll('[id^="btn-tab-"]');
+  buttons.forEach(btn => {
+    btn.classList.remove('border-blue-600', 'text-blue-600');
+    btn.classList.add('border-transparent', 'text-slate-600', 'hover:text-slate-900', 'hover:border-slate-300');
+  });
+  
+  // Show selected tab
+  const selectedTab = document.getElementById(tabName);
+  if (selectedTab) {
+    selectedTab.classList.remove('hidden');
+  }
+  
+  // Add active state to clicked button
+  const selectedButton = document.getElementById('btn-' + tabName);
+  if (selectedButton) {
+    selectedButton.classList.remove('border-transparent', 'text-slate-600', 'hover:text-slate-900', 'hover:border-slate-300');
+    selectedButton.classList.add('border-blue-600', 'text-blue-600');
+  }
+  
+  // Simpan tab yang dipilih ke localStorage
+  localStorage.setItem('agendaActiveTab', tabName);
+}
+
+// Restore active tab on page load
+document.addEventListener('DOMContentLoaded', function() {
+  const activeTab = localStorage.getItem('agendaActiveTab') || 'tab-daftar';
+  switchTab(activeTab);
+});
 </script>

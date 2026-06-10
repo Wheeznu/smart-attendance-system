@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Acara;
 use App\Models\Agenda;
+use App\Models\Divisi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
@@ -17,7 +18,8 @@ class AgendaController extends Controller
     {
         $agenda = DB::table('agenda')->where('acara_id','=', $acara_id)->get();
         $namaacara = Acara::find($acara_id, ['nama','id']);
-        return view('absensi.agenda', compact('agenda', 'namaacara'));
+        $divisi = Divisi::all()->where('acara_id','=', $acara_id);
+        return view('absensi.agenda', compact('agenda', 'namaacara', 'divisi'));
 
     }
     public function checkin($agenda_id){

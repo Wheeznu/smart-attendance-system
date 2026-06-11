@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Divisi;
 use Illuminate\Http\Request;
 
 class DivisiController extends Controller
@@ -27,7 +28,14 @@ class DivisiController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $data = $request->validate([
+        'nama'             => 'required|string|max:255',
+        'deskripsi'        => 'required',
+        ]);
+        $completed_payload = array_merge($data, [ 'acara_id' => $request->input('acara_id')]);
+        Divisi::create($completed_payload);
+        return redirect()->route('acara.agenda', $request->input('acara_id'));
+
     }
 
     /**

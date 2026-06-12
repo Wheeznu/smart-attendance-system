@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Acara;
+use App\Models\AcaraUser;
 use App\Models\Divisi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -40,10 +42,28 @@ class DivisiController extends Controller
     }
 
     public function divisiAgenda($divisi_id){
+        $divisi = Divisi::find($divisi_id);
+        $acara = Acara::find($divisi->acara_id);
+        $panitia_available = DB::table('users')->whereNotIn('id', function($query) use ($acara) {
+            $query->select('user_id')->from('acara_user')->where('acara_id', '=', $acara->id);
+        })->get();
         $panitia = DB::table('acara_user')
                     ->join('users', 'acara_user.user_id', '=', 'users.id')
                     ->where('acara_user.divisi_id', '=', $divisi_id)->get();
-        return view('absensi.panitia', compact('panitia'));
+        return view('absensi.panitia', compact('panitia', 'divisi', 'acara', 'panitia_available'));
+    }
+
+    // Menambahkan Panitia Baru
+    public function store_panitia(Request $request){
+        $data = [
+            'user_id' => $request->input('user_id'),
+            'acara_id' => $request->input('acara_id'),
+            'divisi_id' => $request->input('divisi_id'),
+        ];
+
+        AcaraUser::create($data);
+        return redirect()->route('agenda.divisi', $request->input('divisi_id'));
+
     }
 
     /**

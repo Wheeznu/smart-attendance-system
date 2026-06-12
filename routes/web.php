@@ -16,6 +16,7 @@ Route::post('/acara/store',[AcaraController::class,'store'])->name('acara.store'
 Route::post('/agenda/store',[AgendaController::class,'store'])->name('agenda.store');
 Route::post('/divisi/store',[DivisiController::class,'store'])->name('divisi.store');
 Route::post('/mahasiswa/store',[MahasiswaController::class,'store'])->name('mahasiswa.store');
+Route::post('/panitia/store',[DivisiController::class,'store_panitia'])->name('panitia.store');
 
 
 Route::get('/acara/agenda/{acara_id}',[AgendaController::class,'index'])->name('acara.agenda');

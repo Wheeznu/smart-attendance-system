@@ -124,6 +124,7 @@
           autofocus
           name="rfid_uid"
           autocomplete="off"
+          required
         >
         <button class="btn-primary py-2 px-3 text-sm" id="scan" type="button">Scan</button>
       </div>
@@ -133,13 +134,13 @@
     <div class="space-y-4 mb-4">
       <div>
         <label>Nama Lengkap</label>
-        <input type="text" class="inp" name="name" placeholder="Masukkan nama lengkap">
+        <input type="text" required class="inp" name="name" placeholder="Masukkan nama lengkap">
       </div>
 
       <div>
         <div>
           <label>Email</label>
-          <input type="email" class="inp" name="email" placeholder="email@kampus.ac.id">
+          <input required type="email" class="inp" name="email" placeholder="email@kampus.ac.id">
         </div>
       </div>
     </div>
@@ -154,7 +155,7 @@
       </button>
       <button
         class="btn-primary flex-1 justify-center"
-        onclick="saveMahasiswa()"
+        
         type="submit"
       >
         Simpan Mahasiswa

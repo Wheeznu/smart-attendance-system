@@ -16,6 +16,8 @@ return new class extends Migration
             $table->foreignId('divisi_id')
                   ->constrained('divisi')
                   ->restrictOnDelete();
+            $table->foreignId('acara_id')
+                  ->constrained('acara');
             $table->timestamps();
 
             $table->unique(['divisi_id', 'user_id']);

@@ -125,7 +125,6 @@
       </button>
       <button
         class="btn-primary flex-1 justify-center"
-        onclick="saveAcara()"
       >
         Simpan Acara
       </button>

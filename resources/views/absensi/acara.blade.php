@@ -48,9 +48,18 @@
               <td>{{ $acr->lokasi }}</td>
               <td class="no-print">
                 <div class="flex gap-2">
-                  <a href="acara/agenda/{{ $acr->id }}" class="btn-primary py-1.5 px-3 text-xs">Detail</a>
-                  <button class="btn-secondary py-1.5 px-3 text-xs">Edit</button>
-                  <button class="btn-danger py-1.5 px-3 text-xs">Hapus</button>
+                  <a href="/acara/agenda/{{ $acr->id }}" class="btn-primary py-1.5 px-3 text-xs">Detail</a>
+                  <button 
+                    class="btn-secondary py-1.5 px-3 text-xs"
+                    data-id="{{ $acr->id }}"
+                    data-nama="{{ $acr->nama }}"
+                    data-tgl-mulai="{{ $acr->tanggal_mulai->format('Y-m-d') }}"
+                    data-tgl-selesai="{{ $acr->tanggal_selesai->format('Y-m-d') }}"
+                    data-lokasi="{{ $acr->lokasi }}"
+                    data-deskripsi="{{ $acr->deskripsi }}"
+                    onclick="openEditAcara(this)"
+                  >Edit</button>
+                  <a href="/acara/delete/{{ $acr->id }}" class="btn-danger py-1.5 px-3 text-xs" onclick="return confirm('Apakah Anda yakin ingin menghapus acara ini?')">Hapus</a>
                 </div>
               </td>
             </tr>
@@ -164,5 +173,83 @@
     </div>
   </div>
 </div>
+
+<div id="modal-edit-acara" class="modal-overlay hidden" onclick="closeModal(event, 'modal-edit-acara')">
+  <div class="modal-box" onclick="event.stopPropagation()">
+        <div class="flex items-center justify-between mb-6">
+      <div>
+        <h2 class="font-display font-800 text-slate-900 text-xl">Edit Acara</h2>
+        <p class="text-slate-500 text-sm mt-0.5">Ubah data acara</p>
+      </div>
+      <button
+        onclick="closeModal(null,'modal-edit-acara')"
+        class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 transition"
+      >
+        ✕
+      </button>
+    </div>
+
+         <form id="form-edit-acara" action="" method="POST">
+      @csrf
+    <div class="space-y-4">
+      <div>
+        <label>Nama Acara</label>
+        <input type="text" name="nama" id="edit-nama" class="inp" placeholder="Contoh: Seminar Nasional AI 2025">
+      </div>
+
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label>Tanggal Mulai</label>
+          <input type="date" name="tanggal_mulai" id="edit-tgl-mulai" class="inp">
+        </div>
+        <div>
+          <label>Tanggal Selesai</label>
+          <input type="date" name="tanggal_selesai" id="edit-tgl-selesai" class="inp">
+        </div>
+      </div>
+
+      <div>
+        <label>Lokasi</label>
+        <input type="text" name="lokasi" id="edit-lokasi" class="inp" placeholder="Nama ruangan / tempat">
+      </div>
+
+      <div>
+        <label>Deskripsi</label>
+        <textarea name="deskripsi" id="edit-deskripsi" class="inp h-20 resize-none" placeholder="Deskripsi singkat acara"></textarea>
+      </div>
+      
+    </div>
+
+        <div class="flex gap-3 mt-6">
+      <button
+        class="btn-secondary flex-1 justify-center"
+        onclick="closeModal(null,'modal-edit-acara')"
+      >
+        Batal
+      </button>
+      <button
+        class="btn-primary flex-1 justify-center"
+      >
+        Simpan Perubahan
+      </button>
+    </div>
+</form>
+      </div>
+</div>
+
+<script>
+function openEditAcara(btn) {
+  const id = btn.getAttribute('data-id');
+  
+  document.getElementById('form-edit-acara').action = `/acara/update/${id}`;
+  document.getElementById('edit-nama').value = btn.getAttribute('data-nama');
+  document.getElementById('edit-tgl-mulai').value = btn.getAttribute('data-tgl-mulai');
+  document.getElementById('edit-tgl-selesai').value = btn.getAttribute('data-tgl-selesai');
+  document.getElementById('edit-lokasi').value = btn.getAttribute('data-lokasi');
+  document.getElementById('edit-deskripsi').value = btn.getAttribute('data-deskripsi');
+
+  showModal('modal-edit-acara');
+}
+</script>
 
 @endsection

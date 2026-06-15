@@ -48,4 +48,28 @@ public function daftarkanPeserta(Request $request, Acara $acara)
 
     return back()->with('success', 'Peserta berhasil didaftarkan.');
 }
+
+public function update(Request $request, $id)
+{
+    $data = $request->validate([
+        'nama'             => 'required|string|max:255',
+        'deskripsi'        => 'nullable|string',
+        'tanggal_mulai'    => 'required|date',
+        'tanggal_selesai'  => 'required|date|after_or_equal:tanggal_mulai',
+        'lokasi'           => 'nullable|string|max:255',
+    ]);
+
+    $acara = Acara::findOrFail($id);
+    $acara->update($data);
+    
+    return redirect()->route('acara');
+}
+
+public function delete($id)
+{
+    $acara = Acara::findOrFail($id);
+    $acara->delete();
+    return redirect()->route('acara');
+}
+
 }

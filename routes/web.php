@@ -11,12 +11,20 @@ Route::get('/', [\App\Http\Controllers\DashboardController::class, 'index']);
 Route::get('/mahasiswa',[MahasiswaController::class, 'index'])->name('mahasiswa.index');
 
 Route::get('/acara',[AcaraController::class,'index'])->name('acara');
+
 // Store
 Route::post('/acara/store',[AcaraController::class,'store'])->name('acara.store');
 Route::post('/agenda/store',[AgendaController::class,'store'])->name('agenda.store');
 Route::post('/divisi/store',[DivisiController::class,'store'])->name('divisi.store');
 Route::post('/mahasiswa/store',[MahasiswaController::class,'store'])->name('mahasiswa.store');
 Route::post('/panitia/store',[DivisiController::class,'store_panitia'])->name('panitia.store');
+
+// Update
+Route::post('/acara/update/{id}', [AcaraController::class, 'update'])->name('acara.update');
+
+//Delete
+Route::get('/acara/delete/{id}', [AcaraController::class, 'delete'])->name('acara.delete');
+
 
 
 Route::get('/acara/agenda/{acara_id}',[AgendaController::class,'index'])->name('acara.agenda');

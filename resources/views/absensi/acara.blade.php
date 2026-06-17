@@ -247,7 +247,6 @@
                             notifikasi.innerHTML = `<span class="text-green-600 font-bold">Berhasil!</span>`;
                             setTimeout(() => {
                                 notifikasi.innerHTML = ``;
-                                
                                 acara_tabel.innerHTML = data.table;
                             }, 400);
                             closeModal(null,'modal-tambah-acara')

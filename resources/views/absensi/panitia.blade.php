@@ -3,7 +3,7 @@
     <div id="page-mahasiswa" class="page active">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-6">
             <div class="flex gap-2 flex-1 flex-wrap">
-                <span> {{ $acara->nama }} / {{ $divisi->nama }} </span>
+                <span> <a href="{{ route('acara.agenda', ['acara_id' => encrypt($acara->id)]) }}"> {{ $acara->nama }} </a>/ Divisi {{ $divisi->nama }} </span>
             </div>
             <div class="flex gap-2">
                 <button class="btn-secondary no-print" onclick="printSection('mahasiswa-table')">

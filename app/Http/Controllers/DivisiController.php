@@ -38,7 +38,7 @@ class DivisiController extends Controller
         $completed_payload = array_merge($data, ['acara_id' => $request->input('acara_id')]);
         Divisi::create($completed_payload);
 
-        return redirect()->route('acara.agenda', $request->input('acara_id'));
+        return redirect()->route('acara.agenda', ['acara_id' => encrypt($request->input('acara_id'))]);
 
     }
 

@@ -172,7 +172,7 @@
                                 `,
                                 icon: "success",
                                 showConfirmButton: false,
-                                timer: 3000,
+                                timer: 1000,
                                 timerProgressBar: true,
                                 customClass: {
                                     popup: 'rounded-2xl border border-slate-100',
@@ -184,14 +184,14 @@
                             });
                         } else {
                             notifikasi.innerHTML =
-                                `<span class="text-red-600 font-bold text-sm">❌ ${data.message}</span>`;
+                                `<span class="text-red-600 font-bold text-sm"> ${data.message}</span>`;
                             console.error("Detail Error PHP:", data.message);
                         }
                     })
                     .catch(error => {
                         console.error('Error Fetch:', error);
                         notifikasi.innerHTML =
-                            `<span class="text-red-600 font-bold">❌ Gagal terhubung ke server.</span>`;
+                            `<span class="text-red-600 font-bold"> Gagal terhubung ke server.</span>`;
                     })
                     .finally(() => {
                         inputScan.value = '';

@@ -14,6 +14,11 @@
                         </svg>
                     </div>
                     <div id="rfid-status" class="text-slate-500 text-sm mb-4">Tempelkan kartu RFID...</div>
+                    <form id="form-scan" method="POST" action="{{ route('checkout.agenda', $agenda->id) }}">
+                        @csrf <input type="text" autofocus class="inp" autocomplete="off" id="scan" style="opacity: 0;"
+                            name="rfid" placeholder="Scan RFID di sini...">
+                    </form>
+                    <div id="notifikasi" class="mt-4 text-sm font-semibold text-green-600 font-bold" style="margin-top: -45px; ">Scan</div>
                     <div id="absen-result" class="mt-3 hidden"></div>
                 </div>
 
@@ -55,14 +60,17 @@
                         <table class="data-table">
                             <thead>
                                 <tr>
+                                    <th>No</th>
                                     <th>Mahasiswa</th>
-                                    <th>Agenda</th>
+                                    <th>Divisi</th>
                                     <th>Jam Masuk</th>
                                     <th>Jam Pulang</th>
-                                    <th>Status</th>
+                                    <th>Status Masuk</th>
+                                    <th>Status Pulang</th>
                                 </tr>
                             </thead>
                             <tbody id="absensi-tbody">
+                                 @include('partials.tabel_checkout', ['absensi' => $absensi])
                             </tbody>
                         </table>
                     </div>
@@ -70,4 +78,132 @@
             </div>
         </div>
     </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+ 
+            const formScan = document.getElementById('form-scan');
+            const inputScan = document.getElementById('scan');
+            const notifikasi = document.getElementById('notifikasi');
+            const tbodyAbsensi = document.getElementById('absensi-tbody');
+
+            const rfidPulseContainer = document.querySelector('.rfid-pulse');
+
+            if (inputScan && rfidPulseContainer) {
+                inputScan.addEventListener('focus', () => {
+                    rfidPulseContainer.classList.add('rfid-pulse');
+                });
+
+                inputScan.addEventListener('blur', () => {
+                    rfidPulseContainer.classList.remove('rfid-pulse');
+                });
+            }
+
+            let lastKeyTime = 0;
+            inputScan.addEventListener('keydown', function(e) {
+                const currentTime = Date.now();
+                const timeDifference = currentTime - lastKeyTime;
+
+                if (timeDifference > 50 && e.key !== 'Enter') {
+                    inputScan.value = ''; // Kosongkan input seketika
+                }
+                lastKeyTime = currentTime;
+            });
+
+            formScan.addEventListener('submit', function(e) {
+                e.preventDefault();
+
+                const rfidValue = inputScan.value;
+                const url = formScan.action;
+                const csrfToken = document.querySelector('input[name="_token"]').value;
+
+                if (!rfidValue || rfidValue.trim() === '') return;
+
+                notifikasi.innerHTML = `<span class="text-blue-500">Memproses absensi...</span>`;
+
+                fetch(url, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json',
+                            'X-Requested-With': 'XMLHttpRequest' // Memastikan Laravel mendeteksi request sebagai AJAX
+                        },
+                        body: JSON.stringify({
+                            rfid: rfidValue
+                        })
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            notifikasi.innerHTML = `<span class="text-green-600 font-bold">Scan</span>`;
+
+                            if (tbodyAbsensi) {
+                                tbodyAbsensi.innerHTML = data.html;
+                            }
+                            Swal.fire({
+                                title: '<div class="font-display font-bold text-2xl text-slate-800">Berhasil Check-in!</div>',
+                                html: `
+                                    <div class="mt-2 text-left bg-slate-50 rounded-xl p-5 border border-slate-100 shadow-sm">
+                                        <div class="flex items-center mb-4">
+                                            <div class="w-12 h-12 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center mr-4">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path></svg>
+                                            </div>
+                                            <div>
+                                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Nama Lengkap</p>
+                                                <p class="font-bold text-slate-800 text-lg">${data.nama}</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center mb-4">
+                                            <div class="w-12 h-12 rounded-full bg-purple-100 text-purple-600 flex items-center justify-center mr-4">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+                                            </div>
+                                            <div>
+                                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Divisi</p>
+                                                <p class="font-bold text-slate-800 text-lg">${data.divisi || 'Ini divisi'}</p>
+                                            </div>
+                                        </div>
+                                        <div class="flex items-center">
+                                            <div class="w-12 h-12 rounded-full bg-emerald-100 text-emerald-600 flex items-center justify-center mr-4">
+                                                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                            </div>
+                                            <div>
+                                                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider mb-0.5">Waktu Check-in</p>
+                                                <p class="font-bold text-slate-800 text-lg">${new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit', second:'2-digit'})}</p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                `,
+                                icon: "success",
+                                showConfirmButton: false,
+                                timer: 1000,
+                                timerProgressBar: true,
+                                customClass: {
+                                    popup: 'rounded-2xl border border-slate-100',
+                                }
+                            }).then((result) => {
+                                if (result.dismiss === Swal.DismissReason.timer) {
+                                    console.log("I was closed by the timer");
+                                }
+                            });
+                        } else {
+                            notifikasi.innerHTML =
+                                `<span class="text-red-600 font-bold text-sm"> ${data.message}</span>`;
+                            console.error("Detail Error PHP:", data.message);
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error Fetch:', error);
+                        notifikasi.innerHTML =
+                            `<span class="text-red-600 font-bold"> Gagal terhubung ke server.</span>`;
+                    })
+                    .finally(() => {
+                        inputScan.value = '';
+                        inputScan.focus();
+                    });
+            });
+            inputScan.addEventListener('blur', () => {
+                inputScan.focus();
+            })
+        });
+    </script>
 @endsection

@@ -32,6 +32,7 @@ Route::get('acara/agenda/divisi/{divisi_id}', [DivisiController::class, 'divisiA
 
 Route::get('/checkin/{id_agenda}', [AgendaController::class, 'checkin'])->name('checkin');
 Route::post('/checkin/agenda/{agenda_id}', [AgendaController::class, 'checkin_panitia'])->name('checkin.agenda');
-Route::get('/checkout/{id_agenda}', [AgendaController::class, 'checkout']);
+Route::get('/checkout/{id_agenda}', [AgendaController::class, 'checkout'])->name('checkout');
+Route::post('/checkout/agenda/{agenda_id}', [AgendaController::class, 'checkout_panitia'])->name('checkout.agenda');
 
 // Route::get('/laporan', [LaporanController::class, 'index']);

@@ -82,7 +82,7 @@ class AgendaController extends Controller
         // echo $completed_payload['checkin'];
         Agenda::create($completed_payload);
 
-        return redirect()->route('acara.agenda', $request->input('acara_id'));
+        return redirect()->route('acara.agenda', ['acara_id' => encrypt($request->input('acara_id'))]);
 
     }
 
@@ -91,10 +91,24 @@ class AgendaController extends Controller
         $nowImmutable = new DateTimeImmutable;
         $jam = $nowImmutable->format('Y-m-d H:i:s');
 
+        $rfid = $request->input('rfid');
+        $user = DB::table('users')->where('rfid_uid', $rfid)->first();
+
+        // Cek apakah user terdaftar
+        if (!$user) {
+            if ($request->wantsJson() || $request->ajax()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Kartu RFID tidak terdaftar!',
+                ]);
+            }
+            return redirect()->route('checkin', $id_agenda)->with('error', 'Kartu RFID tidak terdaftar!');
+        }
+
         // 1. Simpan data baru
         Absensi::create([
             'agenda_id' => $id_agenda,
-            'rfid_uid' => $request->input('rfid'),
+            'rfid_uid' => $rfid,
             'waktu_masuk' => $jam,
             'status' => 'hadir',
             'keterangan' => '-',
@@ -104,7 +118,6 @@ class AgendaController extends Controller
             try {
                 $absensi = DB::table('absensi')
                     ->join('users', 'absensi.rfid_uid', '=', 'users.rfid_uid')->where('agenda_id', '=', $id_agenda)->orderBy('waktu_masuk', 'desc')->get();
-                $nama = DB::table('users')->where('rfid_uid', $request->input('rfid'))->first();
 
                 $htmlTabel = view('partials.tabel_absensi', compact('absensi'))->render();
 
@@ -112,7 +125,7 @@ class AgendaController extends Controller
                     'success' => true,
                     'message' => 'Berhasil scan!',
                     'html' => $htmlTabel,
-                    'nama' => $nama->name,
+                    'nama' => $user->name,
                 ]);
 
             } catch (\Exception $e) {

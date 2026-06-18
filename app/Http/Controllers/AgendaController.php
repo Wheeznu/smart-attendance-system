@@ -28,7 +28,7 @@ class AgendaController extends Controller
                 ->join('divisi', 'divisi.id', '=', 'acara_user.divisi_id')
                 ->where('acara_user.acara_id', '=', $acara_id)->get();
 
-        return view('absensi.agenda', compact('agenda', 'namaacara', 'divisi', 'panitia'));
+        return view('absensi.agenda', compact('agenda', 'namaacara', 'divisi'));
 
     }
 
@@ -82,7 +82,7 @@ class AgendaController extends Controller
         // echo $completed_payload['checkin'];
         Agenda::create($completed_payload);
 
-        return redirect()->route('acara.agenda', $request->input('acara_id'));
+        return redirect()->route('acara.agenda', ['acara_id' => encrypt($request->input('acara_id'))]);
 
     }
 
@@ -102,10 +102,12 @@ class AgendaController extends Controller
 
         if ($request->wantsJson() || $request->ajax()) {
             try {
+                // 1. UBAH DI SINI (hilangkan huruf 's')
                 $absensi = DB::table('absensi')
                     ->join('users', 'absensi.rfid_uid', '=', 'users.rfid_uid')->where('agenda_id', '=', $id_agenda)->orderBy('waktu_masuk', 'desc')->get();
                 $nama = DB::table('users')->where('rfid_uid', $request->input('rfid'))->first();
 
+                // 2. UBAH JUGA DI SINI (di dalam compact)
                 $htmlTabel = view('partials.tabel_absensi', compact('absensi'))->render();
 
                 return response()->json([
@@ -158,7 +160,7 @@ class AgendaController extends Controller
         $acara = Agenda::findOrFail($id);
         $acara->update($data);
 
-        return redirect()->route('acara.agenda', $request->input('acara_id'));
+        return redirect()->route('acara.agenda', ['acara_id' => encrypt($request->input('acara_id'))]);
     }
 
     /**

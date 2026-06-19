@@ -5,22 +5,8 @@
             <div class="flex gap-2 flex-1 flex-wrap">
                 <input type="text" class="inp max-w-xs" placeholder="Cari nama / RFID / email..."
                     oninput="filterTable(this.value)">
-                <select class="inp max-w-40">
-                    <option value="">Semua Jabatan</option>
-                    <option>Ketua</option>
-                    <option>Anggota</option>
-                    <option>Bendahara</option>
-                    <option>Sekretaris</option>
-                </select>
             </div>
             <div class="flex gap-2">
-                <button class="btn-secondary no-print" onclick="printSection('mahasiswa-table')">
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                        <path stroke-linecap="round" stroke-linejoin="round"
-                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z" />
-                    </svg>
-                    Cetak
-                </button>
                 <button class="btn-primary" onclick="showModal('modal-tambah-mahasiswa')">
                     <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4" />
@@ -44,6 +30,9 @@
                 </thead>
                 <tbody id="mahasiswa-tbody">
                     @foreach ($mahasiswa as $idx => $mhs)
+                    @php
+                        $aktif = $mhs->is_active == '1' ? 'Aktif' : 'Nonaktif';
+                    @endphp
                         <tr>
                             <td>{{ $idx + 1 }}</td>
                             <td>
@@ -54,15 +43,15 @@
                                     {{ $mhs->rfid_uid }}
                                 </code>
                             </td>
-                            <td>{{ $mhs->email }}</td>
+                            <td>{{ $mhs->email }} {{ $mhs->is_active }}</td>
                             <td>
                                 <span class="badge {{ $mhs->is_active == '1' ? 'badge-green' : 'badge-gray' }}">
-                                    {{ $mhs->is_active == '1' ? 'Aktif' : 'Nonaktif' }}
+                                    {{ $aktif }}
                                 </span>
                             </td>
                             <td class="no-print">
                                 <div class="flex gap-2">
-                                    <button class="btn-secondary py-1.5 px-3 text-xs">Edit</button>
+                                    <button class="btn-secondary py-1.5 px-3 text-xs btn-edit" onclick="showEditModal('{{ $mhs->id }}', '{{ $mhs->name }}', '{{ $mhs->rfid_uid }}', '{{ $mhs->email }}', '{{ $aktif }}' )" >Edit</button>
                                     <button class="btn-danger py-1.5 px-3 text-xs">Hapus</button>
                                 </div>
                             </td>
@@ -138,6 +127,75 @@
             </form>
         </div>
     </div>
+    
+    <div id="modal-edit-panitia" class="modal-overlay hidden" onclick="closeModal(event, 'modal-edit-panitia')">
+        <div class="modal-box" onclick="event.stopPropagation()">
+            <div class="flex items-center justify-between mb-6">
+                <div>
+                    <h2 class="font-display font-800 text-slate-900 text-xl">Edit Mahasiswa</h2>
+                    <p class="text-slate-500 text-sm mt-0.5"></p>
+                </div>
+                <button onclick="closeModal(null,'modal-edit-panitia')"
+                    class="w-8 h-8 rounded-lg bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 transition">
+                    ✕
+                </button>
+            </div>
+            <form action="" method="POST">
+                <div
+                    class="bg-slate-50 border border-dashed border-slate-300 rounded-xl p-4 mb-5 text-center relative overflow-hidden">
+                    <div class="absolute inset-0 flex items-center justify-center opacity-5 pointer-events-none">
+                        <div class="w-48 h-48 border-2 border-blue-600 rounded-full"></div>
+                    </div>
+                    <div class="w-12 h-12 rounded-full border-2 border-blue-600 mx-auto flex items-center justify-center mb-2"
+                        id="rfid-pulse">
+                        <svg class="w-6 h-6 text-blue-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="1.5">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 11c0 3.517-1.009 6.799-2.753 9.571m-3.44-2.04l.054-.09A13.916 13.916 0 008 11a4 4 0 118 0c0 1.017-.07 2.019-.203 3m-2.118 6.844A21.88 21.88 0 0015.171 17m3.839 1.132c.645-2.266.99-4.659.99-7.132A8 8 0 008 4.07M3 15.364c.64-1.319 1-2.8 1-4.364 0-1.457.39-2.823 1.07-4" />
+                        </svg>
+                    </div>
+                    <p class="text-slate-500 text-sm mb-3">RFID</p>
+                    <b>
+                        <span class="text-slate-500 text-sm mb-3">RFID UID : </span>
+                        <span class="text-blue-500 text-sm mb-3" id="rfid"></span>
+                        <br>
+                    </b>
+                </div>
+
+                <div class="space-y-4 mb-4">
+                    <div>
+                        <label>Nama Lengkap</label>
+                        <input type="text" required class="inp" id="nama" name="name" placeholder="Masukkan nama lengkap">
+                    </div>
+
+                    <div>
+                        <div>
+                            <label>Email</label>
+                            <input required type="email" class="inp" name="email" id="email" placeholder="email@kampus.ac.id">
+                        </div>
+                    </div>
+                    <div>
+                        <div>
+                            <label>Status</label>
+                            <select name="status" id="status" class="inp">
+                                <option id="Aktif" value="1">Aktif</option>
+                                <option id="Nonaktif" value="0">Tidak Aktif</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex gap-3 mt-6">
+                    <button class="btn-secondary flex-1 justify-center" onclick="closeModal(null,'modal-edit-panitia')">
+                        Batal
+                    </button>
+                    <button class="btn-primary flex-1 justify-center" type="submit">
+                        Simpan Mahasiswa
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 
     <script>
         const btn_scan = document.getElementById('scan');
@@ -171,5 +229,22 @@
 
             lastKeyTime = currentTime;
         });
+
+        // Edit
+        function showEditModal(id, nama, rfid, email, status) {
+            // document.getElementById('form-edit-agenda').action = `/agenda/update/${id}`
+            document.getElementById('rfid').innerHTML = rfid;
+            document.getElementById('nama').value = nama;
+            document.getElementById('email').value = email;
+            document.getElementById(status).setAttribute('selected', '')  ;
+            // console.log(status)
+            // console.log()
+            // document.getElementById('edit-agenda-checkin').value = checkin || '-';
+            // document.getElementById('edit-agenda-batas-checkin').value = batasCheckin || '-';
+            // document.getElementById('edit-agenda-checkout').value = checkout || '-';
+            // document.getElementById('edit-agenda-batas-checkout').value = batasCheckout || '-';
+
+            showModal('modal-edit-panitia');
+        }
     </script>
 @endsection

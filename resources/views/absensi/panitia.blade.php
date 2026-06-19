@@ -124,8 +124,8 @@
                     <button class="btn-secondary flex-1 justify-center" onclick="closeModal(null,'modal-tambah-mahasiswa')">
                         Batal
                     </button>
-                    <button class="btn-primary flex-1 justify-center" type="submit">
-                        Simpan Mahasiswa
+                    <button class="btn-primary flex-1 justify-center" id="simpan" type="submit">
+                        Simpan Panitia
                     </button>
                 </div>
             </form>
@@ -137,6 +137,7 @@
         const panitiaselect = document.getElementById('panitia-select')
         const rfidspan = document.getElementById('rfid-span')
         const emailspan = document.getElementById('email-span')
+        const simpan = document.getElementById('simpan')
         panitiaselect.addEventListener('change', (e) => {
             let selected_id = panitiaselect.value
             panitia.forEach(element => {
@@ -146,5 +147,9 @@
                 }
             });
         })
+
+        if(panitiaselect.value === '-'){
+            simpan.setAttribute('disabled', '')
+        }
     </script>
 @endsection

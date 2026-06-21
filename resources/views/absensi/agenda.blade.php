@@ -559,6 +559,12 @@
 
     document.addEventListener('DOMContentLoaded', function() {
         const activeTab = localStorage.getItem('agendaActiveTab') || 'tab-daftar';
-        switchTab(activeTab, 'tambah-acara');
+        let btnName = 'tambah-acara';
+        if (activeTab === 'tab-divisi') {
+            btnName = 'tambah-divisi';
+        } else if (activeTab === 'tab-panitia') {
+            btnName = '-';
+        }
+        switchTab(activeTab, btnName);
     });
 </script>
